@@ -1,0 +1,15 @@
+{
+	"name": "firstAzureDfactory",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "3710db95-f4d0-49f4-ab84-013e13e85cd2",
+		"tenantId": "4a4b5da0-cde8-4798-98aa-202704a8d427"
+	}
+}
