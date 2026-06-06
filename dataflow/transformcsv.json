@@ -1,0 +1,82 @@
+{
+	"name": "transformcsv",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "dataflowsource",
+						"type": "DatasetReference"
+					},
+					"name": "source1csv"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Dataflowsink2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectcolumn"
+				},
+				{
+					"name": "filterrows"
+				},
+				{
+					"name": "splitbyfule"
+				},
+				{
+					"name": "groupbysellertype"
+				},
+				{
+					"name": "alterRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          name as string,",
+				"          year as date,",
+				"          selling_price as integer,",
+				"          km_driven as integer,",
+				"          fuel as string,",
+				"          seller_type as string,",
+				"          transmission as string,",
+				"          owner as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1csv",
+				"source1csv select(mapColumn(",
+				"          name,",
+				"          year,",
+				"          selling_price,",
+				"          km_driven,",
+				"          fuel,",
+				"          seller_type,",
+				"          transmission",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcolumn",
+				"selectcolumn filter(km_driven >50000) ~> filterrows",
+				"filterrows split(fuel =='Petrol',",
+				"     fuel =='CNG' ||fuel== 'LPG',",
+				"     disjoint: false) ~> splitbyfule@(cars, auto, truck)",
+				"splitbyfule@cars aggregate(seller_type = max(selling_price)) ~> groupbysellertype",
+				"groupbysellertype alterRow(insertIf(1==1 )) ~> alterRows",
+				"splitbyfule@cars sink(allowSchemaDrift: true,",
+				"     validateSchema: true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
