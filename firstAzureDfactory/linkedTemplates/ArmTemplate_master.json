@@ -23,6 +23,10 @@
 			"type": "string",
 			"defaultValue": "https://firstdatafactoryganesh.dfs.core.windows.net/"
 		},
+		"manager_trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/9c28c0b7-0a2c-476e-abb7-7ee2c3fadf52/resourceGroups/firstRgADF/providers/Microsoft.Storage/storageAccounts/firstdatafactoryganesh"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -61,6 +65,9 @@
 					},
 					"linkserviceDL_properties_typeProperties_url": {
 						"value": "[parameters('linkserviceDL_properties_typeProperties_url')]"
+					},
+					"manager_trigger_properties_typeProperties_scope": {
+						"value": "[parameters('manager_trigger_properties_typeProperties_scope')]"
 					}
 				}
 			},
