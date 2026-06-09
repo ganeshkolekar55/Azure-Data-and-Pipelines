@@ -26,6 +26,10 @@
 		"manager_trigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/9c28c0b7-0a2c-476e-abb7-7ee2c3fadf52/resourceGroups/firstRgADF/providers/Microsoft.Storage/storageAccounts/firstdatafactoryganesh"
+		},
+		"mann_trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/9c28c0b7-0a2c-476e-abb7-7ee2c3fadf52/resourceGroups/firstRgADF/providers/Microsoft.Storage/storageAccounts/firstdatafactoryganesh"
 		}
 	},
 	"variables": {
@@ -851,16 +855,8 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "manager_pipline",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
+				"runtimeState": "Stopped",
+				"pipelines": [],
 				"type": "BlobEventsTrigger",
 				"typeProperties": {
 					"blobPathBeginsWith": "/source/blobs/csvfiles/",
@@ -872,9 +868,7 @@
 					]
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/manager_pipline')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/selected_files_trigger')]",
@@ -993,6 +987,37 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/dataflowsource')]",
 				"[concat(variables('factoryId'), '/datasets/Dataflowsink2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/mann_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "manager_pipline",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/source/blobs/csvfiles/",
+					"blobPathEndsWith": ".csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('mann_trigger_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/manager_pipline')]"
 			]
 		}
 	]

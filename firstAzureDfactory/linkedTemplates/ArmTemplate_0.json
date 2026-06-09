@@ -26,6 +26,10 @@
 		"manager_trigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/9c28c0b7-0a2c-476e-abb7-7ee2c3fadf52/resourceGroups/firstRgADF/providers/Microsoft.Storage/storageAccounts/firstdatafactoryganesh"
+		},
+		"mann_trigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/9c28c0b7-0a2c-476e-abb7-7ee2c3fadf52/resourceGroups/firstRgADF/providers/Microsoft.Storage/storageAccounts/firstdatafactoryganesh"
 		}
 	},
 	"variables": {
@@ -73,6 +77,27 @@
 						"type": "SecureString",
 						"value": "[parameters('linkserviceDL_accountKey')]"
 					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/manager_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/source/blobs/csvfiles/",
+					"blobPathEndsWith": ".csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('manager_trigger_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
 				}
 			},
 			"dependsOn": []
@@ -934,7 +959,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/manager_trigger')]",
+			"name": "[concat(parameters('factoryName'), '/mann_trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -954,7 +979,7 @@
 					"blobPathBeginsWith": "/source/blobs/csvfiles/",
 					"blobPathEndsWith": ".csv",
 					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('manager_trigger_properties_typeProperties_scope')]",
+					"scope": "[parameters('mann_trigger_properties_typeProperties_scope')]",
 					"events": [
 						"Microsoft.Storage.BlobCreated"
 					]
@@ -962,37 +987,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/manager_pipline')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/selected_files_trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "specificfileonly",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Minute",
-						"interval": 4,
-						"startTime": "2026-06-07T18:24:00",
-						"endTime": "2026-06-07T19:00:00",
-						"timeZone": "India Standard Time"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/specificfileonly')]"
 			]
 		}
 	]
