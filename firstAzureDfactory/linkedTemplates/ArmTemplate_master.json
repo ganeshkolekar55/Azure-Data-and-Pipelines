@@ -27,10 +27,6 @@
 			"type": "string",
 			"defaultValue": "/subscriptions/9c28c0b7-0a2c-476e-abb7-7ee2c3fadf52/resourceGroups/firstRgADF/providers/Microsoft.Storage/storageAccounts/firstdatafactoryganesh"
 		},
-		"mann_trigger_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/9c28c0b7-0a2c-476e-abb7-7ee2c3fadf52/resourceGroups/firstRgADF/providers/Microsoft.Storage/storageAccounts/firstdatafactoryganesh"
-		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -72,33 +68,10 @@
 					},
 					"manager_trigger_properties_typeProperties_scope": {
 						"value": "[parameters('manager_trigger_properties_typeProperties_scope')]"
-					},
-					"mann_trigger_properties_typeProperties_scope": {
-						"value": "[parameters('mann_trigger_properties_typeProperties_scope')]"
 					}
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "firstAzureDfactory_ArmTemplate_1",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2024-03-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'firstAzureDfactory_ArmTemplate_0')]"
-			]
 		}
 	]
 }
