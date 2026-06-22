@@ -1,0 +1,16 @@
+{
+	"name": "AzureSqlOrders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDBforProject",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "orders"
+		}
+	}
+}
