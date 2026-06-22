@@ -11,9 +11,29 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
 		},
+		"AzureSqlDBforProject_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDBforProject'"
+		},
 		"linkserviceDL_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'linkserviceDL'"
+		},
+		"storagelinkedForProject_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'storagelinkedForProject'"
+		},
+		"AzureSqlDBforProject_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "adfserverproject.database.windows.net"
+		},
+		"AzureSqlDBforProject_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "e-comerce"
+		},
+		"AzureSqlDBforProject_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "Ganaeh"
 		},
 		"HttpServer1_properties_typeProperties_url": {
 			"type": "string",
@@ -22,6 +42,10 @@
 		"linkserviceDL_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://firstdatafactoryganesh.dfs.core.windows.net/"
+		},
+		"storagelinkedForProject_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://gkdatalake8844.dfs.core.windows.net/"
 		},
 		"manager_trigger_properties_typeProperties_scope": {
 			"type": "string",
@@ -217,6 +241,64 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Source_folder')]",
 				"[concat(variables('factoryId'), '/datasets/destination_contai')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/prodpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ExecutemanagerPipeline",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "manager_pipline",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Execute_onlyselect_Pipeline",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ExecutemanagerPipeline",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "specificfileonly",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/manager_pipline')]",
+				"[concat(variables('factoryId'), '/pipelines/specificfileonly')]"
 			]
 		},
 		{
@@ -490,6 +572,34 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Customers_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "storagelinkedForProject",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Customers (1).csv",
+						"fileSystem": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/storagelinkedForProject')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Dataflowsink2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -559,6 +669,62 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Orders_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "storagelinkedForProject",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Orders (2).csv",
+						"fileSystem": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/storagelinkedForProject')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Products_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "storagelinkedForProject",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Products.csv",
+						"fileSystem": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/storagelinkedForProject')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Source_folder')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -572,7 +738,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "orders (1).csv",
+						"fileName": "carsdetail.csv",
 						"fileSystem": "source"
 					},
 					"columnDelimiter": ",",
@@ -813,6 +979,28 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDBforProject')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDBforProject_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDBforProject_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDBforProject_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDBforProject_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/HttpServer1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -845,12 +1033,29 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/storagelinkedForProject')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('storagelinkedForProject_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('storagelinkedForProject_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/manager_trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -960,64 +1165,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/dataflowsource')]",
 				"[concat(variables('factoryId'), '/datasets/Dataflowsink2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/prodpipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ExecutemanagerPipeline",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "manager_pipline",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "Execute_onlyselect_Pipeline",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ExecutemanagerPipeline",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "specificfileonly",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/manager_pipline')]",
-				"[concat(variables('factoryId'), '/pipelines/specificfileonly')]"
 			]
 		}
 	]

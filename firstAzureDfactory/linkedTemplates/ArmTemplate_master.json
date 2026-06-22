@@ -11,9 +11,29 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
 		},
+		"AzureSqlDBforProject_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDBforProject'"
+		},
 		"linkserviceDL_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'linkserviceDL'"
+		},
+		"storagelinkedForProject_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'storagelinkedForProject'"
+		},
+		"AzureSqlDBforProject_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "adfserverproject.database.windows.net"
+		},
+		"AzureSqlDBforProject_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "e-comerce"
+		},
+		"AzureSqlDBforProject_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "Ganaeh"
 		},
 		"HttpServer1_properties_typeProperties_url": {
 			"type": "string",
@@ -22,6 +42,10 @@
 		"linkserviceDL_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://firstdatafactoryganesh.dfs.core.windows.net/"
+		},
+		"storagelinkedForProject_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://gkdatalake8844.dfs.core.windows.net/"
 		},
 		"manager_trigger_properties_typeProperties_scope": {
 			"type": "string",
@@ -57,8 +81,23 @@
 					"AzureBlobStorage1_connectionString": {
 						"value": "[parameters('AzureBlobStorage1_connectionString')]"
 					},
+					"AzureSqlDBforProject_password": {
+						"value": "[parameters('AzureSqlDBforProject_password')]"
+					},
 					"linkserviceDL_accountKey": {
 						"value": "[parameters('linkserviceDL_accountKey')]"
+					},
+					"storagelinkedForProject_accountKey": {
+						"value": "[parameters('storagelinkedForProject_accountKey')]"
+					},
+					"AzureSqlDBforProject_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDBforProject_properties_typeProperties_server')]"
+					},
+					"AzureSqlDBforProject_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDBforProject_properties_typeProperties_database')]"
+					},
+					"AzureSqlDBforProject_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDBforProject_properties_typeProperties_userName')]"
 					},
 					"HttpServer1_properties_typeProperties_url": {
 						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
@@ -66,12 +105,35 @@
 					"linkserviceDL_properties_typeProperties_url": {
 						"value": "[parameters('linkserviceDL_properties_typeProperties_url')]"
 					},
+					"storagelinkedForProject_properties_typeProperties_url": {
+						"value": "[parameters('storagelinkedForProject_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "firstAzureDfactory_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
 					"manager_trigger_properties_typeProperties_scope": {
 						"value": "[parameters('manager_trigger_properties_typeProperties_scope')]"
 					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'firstAzureDfactory_ArmTemplate_0')]"
+			]
 		}
 	]
 }
